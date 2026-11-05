@@ -1,3 +1,4 @@
+
 package com.example;
 
 import com.sun.net.httpserver.HttpServer;
@@ -7,17 +8,21 @@ import java.nio.charset.StandardCharsets;
 
 public class App {
 
+    static final int PORT = 8081;
+
+    static final String RESPONSE_MESSAGE =
+            "Hello! Maven CI/CD Pipeline";
+
     public static void main(String[] args) throws Exception {
 
         HttpServer server = HttpServer.create(
-            new InetSocketAddress("0.0.0.0", 8082), 0
+                new InetSocketAddress("0.0.0.0", PORT), 0
         );
 
         server.createContext("/", exchange -> {
 
-            String response = "Hello! Maven CI/CD Pipeline";
-
-            byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
+            byte[] responseBytes =
+                    RESPONSE_MESSAGE.getBytes(StandardCharsets.UTF_8);
 
             exchange.getResponseHeaders()
                     .set("Content-Type", "text/plain; charset=UTF-8");
@@ -31,6 +36,8 @@ public class App {
 
         server.start();
 
-        System.out.println("Server started at http://localhost:8082");
+        System.out.println(
+                "Server started at http://localhost:" + PORT
+        );
     }
 }
