@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build Test and Push Docker Image
+    name: Build Test Push and Deploy
     runs-on: self-hosted
 
     steps:
@@ -60,3 +60,11 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/java-maven-cicd:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/java-maven-cicd:${{ github.sha }}
+
+      - name: Deploy to Kubernetes
+        if: github.event_name == 'push'
+        run: |
+          kubectl set image deployment/java-maven-deployment \
+            java-maven=${{ secrets.DOCKERHUB_USERNAME }}/java-maven-cicd:${{ github.sha }}
+
+          kubectl rollout status deployment/java-maven-deployment
